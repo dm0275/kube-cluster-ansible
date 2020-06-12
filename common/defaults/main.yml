@@ -9,8 +9,8 @@ packages:
   - ca-certificates
 
 kube_packages:
-  - "kubelet={{kube_packages_version}}"
-  - "kubeadm={{kube_packages_version}}"
+  - "kubelet={{kubernetes_version}}-00"
+  - "kubeadm={{kubernetes_version}}-00"
   - kubectl
 
 docker_repo_url: "https://download.docker.com/linux/ubuntu/gpg"
@@ -20,6 +20,6 @@ docker_version: "18.06.1~ce~3-0~ubuntu"
 docker_apt_release_channel: stable
 docker_apt_repository: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
 
-kube_packages_version: 1.14.7-00
+kubernetes_version: 1.14.7
 kubernetes_apt_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
 kubernetes_repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"

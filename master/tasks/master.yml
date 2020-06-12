@@ -9,7 +9,7 @@
 
 - name: Initialize Kubernetes master with kubeadm
   command: >
-    kubeadm init --kubernetes-version {{kubernetes_version_kubeadm}} --node-name={{kubernetes_node_name}}-{{ansible_default_ipv4.address}}
+    kubeadm init --kubernetes-version {{kubernetes_version}} --node-name={{kubernetes_node_name}}-{{ansible_default_ipv4.address}}
 
   register: kube_init
   when: not kubernetes_installed.stat.exists

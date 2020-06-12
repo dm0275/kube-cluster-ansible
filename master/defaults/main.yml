@@ -4,4 +4,3 @@ user: vagrant
 user_home: "/home/{{user}}"
 
 kubernetes_node_name: master
-kubernetes_version_kubeadm: 1.14.7
