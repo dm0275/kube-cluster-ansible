@@ -1,0 +1,52 @@
+- name: Include common variables
+  include_vars: 
+    file: ../../common/defaults/main.yml
+
+- name: Check if Kubernetes is installed
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubernetes_installed
+
+- name: Initialize Kubernetes master with kubeadm
+  command: >
+    kubeadm init --kubernetes-version {{kubernetes_version_kubeadm}} --node-name={{kubernetes_node_name}}-{{ansible_default_ipv4.address}}
+
+  register: kube_init
+  when: not kubernetes_installed.stat.exists
+
+- name: Create .kube dir
+  file:
+    path: "{{user_home}}/.kube"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode: 0755
+
+- name: Copy kube config to user dir
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{user_home}}/.kube/config"
+    owner: "{{user}}"
+    group: "{{user}}"
+    remote_src: yes
+
+- name: Get Kubectl version
+  shell: "kubectl version | base64 | tr -d '\n'"
+  register: kubectl_version
+
+- name: Deploy Pod Network
+  command: "kubectl --kubeconfig /home/{{user}}/.kube/config apply -f \"https://cloud.weave.works/k8s/net?k8s-version={{kubectl_version.stdout}}\""
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Copy join command to local file
+  become: no
+  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+
+- name: Copy kube config file
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{playbook_dir}}/config"
+    flat: yes

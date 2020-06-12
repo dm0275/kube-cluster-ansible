@@ -1,0 +1,6 @@
+---
+# defaults file for kube-cluster-ansible
+user: vagrant
+user_home: "/home/{{user}}"
+
+kubernetes_node_name: worker

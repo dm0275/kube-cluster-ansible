@@ -1,0 +1,16 @@
+- set_fact:
+    join_cmd: "{{ lookup('file', 'join-command') }}"
+
+- name: Include common variables
+  include_vars: 
+    file: ../../common/defaults/main.yml
+
+- name: Check if Kubernetes is installed
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubernetes_installed
+
+- name: Join Kubernetes cluster
+  command: "{{join_cmd}} --node-name={{kubernetes_node_name}}-{{ansible_default_ipv4.address}}"
+  register: kube_join
+  when: not kubernetes_installed.stat.exists
