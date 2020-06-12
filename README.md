@@ -28,11 +28,15 @@ Example Playbook
 
 ```yaml
 - hosts: master-server
+  become: true
+  gather_facts: true
   roles:
     - role: common
     - role: master
 
 - hosts: worker-servers
+  become: true
+  gather_facts: true
   roles:
     - role: common
     - role: worker
